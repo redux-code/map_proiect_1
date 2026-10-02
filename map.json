@@ -1,10 +1,10 @@
 {
   "sablon": "map-2026-2027-v1-cpp",
-  "nume": "[Nume Prenume]",
-  "grupa": "[grupa]",
-  "marca": 0,
-  "email": "[prenume.nume@student.upt.ro]",
-  "tema": 0,
+  "nume": "Museat Mihai-Ionut",
+  "grupa": "2.1",
+  "marca": "LH615677",
+  "email": "mihai-ionut.museat@student.upt.ro",
+  "tema": 1,
   "limbaj": "cpp",
   "extensii": []
 }
