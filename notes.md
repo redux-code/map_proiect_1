@@ -25,4 +25,5 @@
 - O categorie invalida la GET /contacts intoarce lista goala, nu 400.
 
 ## Probleme
-- Prima rulare de CI a picat: fisierul de teste ajunsese in tests/tests/ si CMake nu il gasea. L-am mutat in tests/.
+- prima rulare de CI a picat: fisierul de teste ajunsese in tests/tests/ si CMake nu il gasea. L-am mutat in tests/.
+- contacts.hpp a ajuns gol intr-un commit fara sa observ. CI-ul a picat abia cand testele pentru ContactBook l-au inclus (03fd9f2). L-am restaurat in 8cfdd75.
