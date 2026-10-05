@@ -1,20 +1,28 @@
-# Note proiect MAP
+# Note de lucru
 
-## Pe unde sunt
-- Am repo-ul, CI-ul merge (test + build verzi) si imaginea e publicata in GHCR, publica.
-- Am facut validarea pentru contact (nume, email, telefon, categorie) si testele ei.
-- Urmeaza clasele Contact si ContactBook, dupa aia rutele.
-- Mai am de completat: HomePage() din app.hpp, LABEL din Dockerfile, badge-ul CI in README si foaia de inscriere.
+## Unde am ajuns
+- Repo-ul e pus la punct, CI-ul ruleaza testele si publica imaginea in GHCR.
+- Validarea campurilor e gata (nume, email, telefon, categorie), cu teste.
+- Clasa Contact e gata, cu teste.
+- ContactBook e gata, cu teste: email unic, id-uri de la 1, filtrare, sortare, reset.
+- Urmeaza rutele din main.cpp.
+- Mai am de completat pagina de start, LABEL-ul din Dockerfile si badge-ul in README.
 
-## Decizii pe care le-am luat
-- Validatorii intorc std::optional<std::string> in loc de bool, ca sa pot trimite direct mesajul de eroare in raspunsul 400.
-- La nume numar caractere, nu octeti. Un "ă" are 2 octeti in UTF-8 si altfel un nume cu diacritice ar fi respins degeaba.
-- Logica e in fisiere .hpp separate, nu in main.cpp, ca sa o pot testa fara sa pornesc serverul.
+## Decizii
+- Validatorii intorc std::optional<std::string> in loc de bool. Asa am direct mesajul de eroare pentru raspunsul 400.
+- La nume numar caractere, nu octeti. Un nume cu diacritice are mai multi octeti decat litere si ar fi fost respins degeaba.
+- Logica e in headere separate de main.cpp, ca sa o pot testa fara server.
+- Contact nu are setteri, pentru ca un contact nu se editeaza dupa creare. Nici nu valideaza, doar tine datele.
+- Emailul se pastreaza cum a fost scris. Pentru comparatie folosesc o copie cu litere mici.
+- In ContactBook, verificarea emailului si adaugarea sunt sub acelasi lock, altfel doua cereri simultane cu acelasi email ar trece amandoua.
+- Find intoarce o copie, nu o referinta in vector.
+- Un contact respins nu consuma un id, iar id-urile sterse nu se refolosesc.
+- Lista e sortata dupa nume, la egalitate dupa id.
 
-## Probleme pe care le-am avut
-- CI-ul a picat la prima rulare: fisierul test_contacts.cpp ajunsese in tests/tests/ si CMake nu il gasea. L-am mutat in tests/ si a mers. (commit: de pus SHA-ul)
+## De lamurit
+- Cautarea dupa q ignora majusculele doar la litere fara diacritice.
+- La /stats, by_category are acum doar categoriile folosite. De vazut daca trebuie toate patru, cu 0.
+- O categorie invalida la GET /contacts intoarce lista goala, nu 400.
 
-## De tinut minte
-- Commit mic, la cateva zile, nu totul intr-o seara.
-- Codul si comentariile in engleza, README si lucrarea in romana.
-- Ce nu pot explica singur, nu raman in proiect.
+## Probleme
+- Prima rulare de CI a picat: fisierul de teste ajunsese in tests/tests/ si CMake nu il gasea. L-am mutat in tests/.
