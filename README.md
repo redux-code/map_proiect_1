@@ -44,6 +44,13 @@ curl http://localhost:8080/health
 curl http://localhost:8080/version
 ```
 
+Adaugarea si citirea unui contact:
+
+```
+curl -i -H "Content-Type: application/json" -d '{"name":"Ana Pop","email":"ana@example.com","phone":"0722334455","category":"work"}' http://localhost:8080/contacts
+curl -i http://localhost:8080/contacts/1
+```
+
 ## Testare
 
 ```
@@ -60,9 +67,9 @@ cmake --build build -j
 | `/version` | GET | Versiunea si commit-ul din care a fost construita imaginea |
 | `/` | GET | Pagina de prezentare |
 | `/reset` | POST | Goleste datele din memorie |
-| `/contacts` | POST | Adauga un contact (in curs de implementare) |
+| `/contacts` | POST | Adauga un contact. 201 la succes, 400 la date invalide, 409 la email duplicat |
 | `/contacts` | GET | Listeaza contactele, cu filtre `category` si `q` (in curs de implementare) |
-| `/contacts/{id}` | GET | Intoarce un contact (in curs de implementare) |
+| `/contacts/{id}` | GET | Intoarce un contact, sau 404 daca nu exista |
 | `/contacts/{id}` | DELETE | Sterge un contact (in curs de implementare) |
 | `/stats` | GET | Numarul de contacte, pe categorii (in curs de implementare) |
 
@@ -70,7 +77,9 @@ cmake --build build -j
 
 - **Validarea intoarce mesajul de eroare, nu doar adevarat/fals.** Fiecare validator intoarce `std::optional<std::string>`: gol daca valoarea e buna, altfel mesajul care ajunge in raspunsul 400.
 - **Lungimea numelui se masoara in caractere, nu in octeti.** In UTF-8 o litera cu diacritice ocupa doi octeti, iar o numaratoare pe octeti ar respinge nume valide.
-- **Logica e separata de server.** Regulile stau in headere proprii (`contacts.hpp`, `contact.hpp`, `contact_book.hpp`), iar `main.cpp` doar leaga rutele HTTP de ele. Asa se pot testa fara sa pornesc serverul.
+- **Logica e separata de server.** Regulile stau in headere proprii (`contacts.hpp`, `contact.hpp`, `contact_book.hpp`, `contact_api.hpp`), iar `main.cpp` doar leaga rutele HTTP de ele. Asa se pot testa fara sa pornesc serverul.
+- **Rutele trec printr-un strat testabil.** Functiile din `contact_api.hpp` primesc corpul cererii sau id-ul din cale si intorc codul HTTP impreuna cu raspunsul JSON. `main.cpp` doar copiaza rezultatul in raspuns, deci si traducerea in coduri HTTP este acoperita de teste.
+- **Cererile gresite nu opresc serverul.** Un corp care nu e JSON valid, un camp lipsa sau de tip gresit intorc 400, iar un id care nu e numar intreg pozitiv intoarce 404.
 - **Emailul se pastreaza exact cum a fost scris.** Unicitatea se verifica pe o copie cu litere mici, dar la citire se intoarce forma originala.
 - **Verificarea emailului si adaugarea se fac atomic.** Serverul trateaza cereri in paralel, asa ca `ContactBook` verifica emailul si adauga contactul sub acelasi lock. Altfel doua cereri simultane cu acelasi email ar putea trece amandoua.
 - **Id-urile sunt atribuite de server si nu se refolosesc.** Un contact respins nu consuma un id, iar dupa stergere numerotarea continua. Dupa `/reset` reincepe de la 1.

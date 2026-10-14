@@ -18,7 +18,7 @@
 - Find intoarce o copie, nu o referinta in vector.
 - Un contact respins nu consuma un id, iar id-urile sterse nu se refolosesc.
 - Lista e sortata dupa nume, la egalitate dupa id.
-
+- Rutele trec printr-un strat (contact_api.hpp) care întoarce cod + JSON, ca să le pot testa fără server.” și la „Probleme”: „Error handler-ul din șablon suprascria mesajul la orice 404, l-am limitat la răspunsurile fără corp.”
 ## De lamurit
 - Cautarea dupa q ignora majusculele doar la litere fara diacritice.
 - La /stats, by_category are acum doar categoriile folosite. De vazut daca trebuie toate patru, cu 0.
